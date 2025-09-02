@@ -1,0 +1,8 @@
+[
+{
+  "directory": "D:/Systems Project/build",
+  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe   -g -o CMakeFiles\\Eva.dir\\eva.cxx.obj -c \"D:\\Systems Project\\tokyo3\\eva.cxx\"",
+  "file": "D:/Systems Project/tokyo3/eva.cxx",
+  "output": "CMakeFiles/Eva.dir/eva.cxx.obj"
+}
+]
