@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <chrono>
 #include <thread>
@@ -17,6 +18,10 @@ int main(int argc, char* argv[]) {
     // -----------------------------
     // 2. Parse CLI arguments
     // -----------------------------
+
+    std::string report_path = "";
+    std::ofstream report;
+
     for (int i = 1; i < argc; i++) {
         std::string arg = argv[i];
         if (arg == "--hz" && i + 1 < argc) {
@@ -24,6 +29,19 @@ int main(int argc, char* argv[]) {
         } else if (arg == "--duration" && i + 1 < argc) {
             duration = std::stoi(argv[++i]);
         }
+        else if (arg == "--report" && i + 1 < argc) {
+          report_path = argv[++i];
+        }
+    }
+
+    if (!report_path.empty()) {
+      report.open(report_path);
+      if (!report.is_open()) {
+        std::cerr << "Error opening file " << report_path << '\n';
+      }
+      else {
+        report << "tick,planned_ms,actual_ms,oversleep_ms\n";
+      }
     }
 
     if (hz <= 0 || duration <= 0) {
