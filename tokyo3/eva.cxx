@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <string>
+#include <conio.h>
 
 int main(int argc, char* argv[]) {
     using clock = std::chrono::steady_clock;
@@ -39,11 +40,44 @@ int main(int argc, char* argv[]) {
 
     int tick = 0;
 
+    bool running = true;
+    bool paused = false;
+    int step_pending = 0;
+
     // -----------------------------
     // 4. Main loop
     // -----------------------------
-    while (true) {
+    while (running) {
         auto deadline = start + std::chrono::duration_cast<clock::duration>((tick + 1) * period);
+
+        if (_kbhit()) {
+          char c = _getch();
+          if (c == 'q') {
+            running = false;
+          }
+          else if (c == 'p') {
+            paused = !paused;
+            std::cout << (paused ? "[PAUSED]\n" : "[RESUMED]\n");
+          }
+          else if (c == 'n' && paused) {
+            step_pending++;
+          }
+        }
+
+        /* If we are paused and we have no pending steps, sleep ten milliseconds. */
+
+        if (paused && step_pending == 0) {
+          std::this_thread::sleep_for(std::chrono::milliseconds(10));
+          continue;
+        }
+
+        /* Else, if we are paused and have more steps pending, then decrement to fall through. */
+        /* Equivalent to doing one tick. */
+
+        if (paused && step_pending > 0) {
+          step_pending--;
+        }
+
         std::this_thread::sleep_until(deadline);
 
         auto now = clock::now();
@@ -59,7 +93,7 @@ int main(int argc, char* argv[]) {
 
         tick++;
 
-        if (elapsed >= duration) {
+        if (elapsed >= duration || !running) {
             break;
         }
     }
