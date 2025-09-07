@@ -1,4 +1,4 @@
-# NERV Missle Defense (Terminal Simulation)
+# NERV Angel Defense (Terminal Simulation)
 
 ![Demo](showcase.gif)
 This is a small terminal-based defense game.  
