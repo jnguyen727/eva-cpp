@@ -1,5 +1,6 @@
 # NERV Defense (Terminal Simulation)
 
+![Demo](showcase.gif)
 This is a small terminal-based defense game.  
 Enemies ("angels") spawn on the grid and move toward your base.  
 Turrets automatically fire projectiles to stop them.  
