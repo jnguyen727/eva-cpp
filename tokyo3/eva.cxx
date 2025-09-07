@@ -34,15 +34,14 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    /* write header row into the csv*/
+
     if (!report_path.empty()) {
       report.open(report_path);
-      if (!report.is_open()) {
-        std::cerr << "Error opening file " << report_path << '\n';
-      }
-      else {
-        report << "tick,planned_ms,actual_ms,oversleep_ms\n";
-      }
+      report << "tick,planned_ms,actual_ms,oversleep_ms\n";
     }
+
+
 
     if (hz <= 0 || duration <= 0) {
         std::cerr << "Invalid arguments: hz and duration must be > 0\n";
@@ -109,11 +108,30 @@ int main(int argc, char* argv[]) {
                   << " | dt_ms " << std::fixed << std::setprecision(1) << dt_ms
                   << std::endl;
 
+        if (report.is_open()) {
+          double planned_ms = (tick + 1) * (1000.0 / hz);
+          double actual_ms  = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(now - start).count();
+
+          double oversleep = actual_ms - planned_ms;
+
+          report << (tick + 1) << ","
+                 << planned_ms << ","
+                 << actual_ms << ","
+                 << oversleep << "\n";
+        }
+
         tick++;
 
         if (elapsed >= duration || !running) {
             break;
         }
+    }
+    
+    /* Close the file for safe practices */
+
+    if (report.is_open()) {
+      report.close();
+      std::cout << "Report written to " << report_path << "\n";
     }
 
     // -----------------------------
